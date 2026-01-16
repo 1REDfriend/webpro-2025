@@ -1,0 +1,22 @@
+[
+    {
+        "id": 1,
+        "question": "1. Britain and France declared war on Germany on 3 September 1939 after the German invasion of which country?",
+        "options": [
+            "Denmark",
+            "Poland",
+            "Czechoslovakia"
+        ],
+        "correctAnswer": "Poland"
+    },
+    {
+        "id": 2,
+        "question": "2. When did Germany invade the USSR?",
+        "options": [
+            "May 1940",
+            "May 1940",
+            "June 1941"
+        ],
+        "correctAnswer": "June 1941"
+    }
+]

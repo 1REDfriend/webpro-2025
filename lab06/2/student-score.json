@@ -1,0 +1,82 @@
+[
+    {
+        "id": 1,
+        "name": "Arun",
+        "gender": "Male",
+        "scores": {
+            "physics": 88,
+            "mathematics": 87,
+            "english": 78
+        }
+    },
+    {
+        "id": 2,
+        "name": "Rajesh",
+        "gender": "Male",
+        "scores": {
+            "physics": 96,
+            "mathematics": 100,
+            "english": 95
+        }
+    },
+    {
+        "id": 3,
+        "name": "Moorthy",
+        "gender": "Male",
+        "scores": {
+            "physics": 89,
+            "mathematics": 90,
+            "english": 70
+        }
+    },
+    {
+        "id": 4,
+        "name": "Raja",
+        "gender": "Male",
+        "scores": {
+            "physics": 30,
+            "mathematics": 25,
+            "english": 40
+        }
+    },
+    {
+        "id": 5,
+        "name": "Usha",
+        "gender": "Female",
+        "scores": {
+            "physics": 67,
+            "mathematics": 45,
+            "english": 55
+        }
+    },
+    {
+        "id": 6,
+        "name": "Priya",
+        "gender": "Female",
+        "scores": {
+            "physics": 56,
+            "mathematics": 46,
+            "english": 60
+        }
+    },
+    {
+        "id": 7,
+        "name": "Sundar",
+        "gender": "Male",
+        "scores": {
+            "physics": 12,
+            "mathematics": 67,
+            "english": 45
+        }
+    },
+    {
+        "id": 8,
+        "name": "Kavitha",
+        "gender": "Female",
+        "scores": {
+            "physics": 78,
+            "mathematics": 71,
+            "english": 75
+        }
+    }
+]
