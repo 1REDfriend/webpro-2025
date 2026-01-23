@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Table DOM</title>
+    <style>
+        /* CSS พื้นฐาน */
+        body { font-family: sans-serif; padding: 20px; background-color: #f5f5f5; }
+        table { width: 100%; border-collapse: collapse; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        th { background-color: #007bff; color: white; padding: 12px; text-align: left; }
+        td { padding: 12px; border-bottom: 1px solid #ddd; }
+        
+        /* Badge เพศ */
+        .gender-badge {
+            display: inline-block; width: 25px; height: 25px; 
+            border-radius: 50%; text-align: center; line-height: 25px; 
+            color: white; font-weight: bold; font-size: 12px;
+        }
+        .gender-m { background-color: #3498db; } /* ชาย - ฟ้า */
+        .gender-f { background-color: #e74c3c; } /* หญิง - ชมพู */
+
+        /* Position Bar */
+        .bar-container { background-color: #e0e0e0; height: 15px; border-radius: 10px; overflow: hidden; width: 100%; }
+        .bar-fill { height: 100%; border-radius: 10px; }
+        
+        /* Logic สีของ Bar */
+        .bar-green { background-color: #28a745; } /* 100% */
+        .bar-yellow { background-color: #ffc107; } /* < 100% */
+    </style>
+</head>
+<body>
+
+    <div id="app"></div>
+
+    <script>
+        // ฟังก์ชันสร้างตาราง (ทำงานแบบ DOM Manipulation)
+        function createTable(data) {
+            // 1. หาตำแหน่งที่จะวางตาราง
+            const app = document.getElementById('app');
+            
+            // 2. สร้างโครงสร้าง Table
+            const table = document.createElement('table');
+            const thead = document.createElement('thead');
+            const tbody = document.createElement('tbody');
+
+            // 3. สร้าง Header
+            const headers = ["ID", "NAME", "GENDER", "POSITION", "POSITION BAR", "ADDRESS"];
+            const trHead = document.createElement('tr');
+            headers.forEach(text => {
+                const th = document.createElement('th');
+                th.textContent = text;
+                trHead.appendChild(th);
+            });
+            thead.appendChild(trHead);
+            table.appendChild(thead);
+
+            // 4. วนลูปข้อมูลสร้างแถว (Rows)
+            data.forEach(user => {
+                const tr = document.createElement('tr');
+
+                // Helper function สร้าง td ง่ายๆ
+                const addCell = (text) => {
+                    const td = document.createElement('td');
+                    td.textContent = text;
+                    tr.appendChild(td);
+                };
+
+                addCell(user.id);
+                addCell(user.name);
+
+                // --- Gender Column ---
+                const tdGender = document.createElement('td');
+                const spanGender = document.createElement('span');
+                spanGender.textContent = user.gender;
+                // ใส่ class ตามเพศ
+                spanGender.className = `gender-badge ${user.gender === 'M' ? 'gender-m' : 'gender-f'}`;
+                tdGender.appendChild(spanGender);
+                tr.appendChild(tdGender);
+
+                addCell(user.position);
+
+                // --- Position Bar Column ---
+                const tdBar = document.createElement('td');
+                const barContainer = document.createElement('div');
+                barContainer.className = 'bar-container';
+
+                const barFill = document.createElement('div');
+                barFill.className = 'bar-fill';
+                // กำหนดความยาวตาม rating
+                barFill.style.width = `${user.rating}%`;
+
+                // ** Logic สีตามโจทย์ **
+                if (user.rating === 100) {
+                    barFill.classList.add('bar-green');
+                } else {
+                    barFill.classList.add('bar-yellow');
+                }
+
+                barContainer.appendChild(barFill);
+                tdBar.appendChild(barContainer);
+                tr.appendChild(tdBar);
+
+                addCell(user.address);
+
+                // เอาแถวใส่ body
+                tbody.appendChild(tr);
+            });
+
+            table.appendChild(tbody);
+            // 5. เอาตารางใส่หน้าเว็บ
+            app.appendChild(table);
+        }
+
+        // --- ส่วน Fetch ตามรูปแบบที่คุณต้องการ ---
+        fetch('data.json')
+            .then(response => response.json())
+            .then(data => createTable(data)) // ส่งข้อมูลเข้าฟังก์ชัน createTable
+            .catch(error => console.log('error', error));
+
+    </script>
+</body>
+</html>

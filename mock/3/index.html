@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Form Validation</title>
+    <style>
+        /* CSS: Modern Notion-style & Clean UI */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f4f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            color: #333;
+        }
+
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        /* Input & Select Styling */
+        input[type="text"],
+        input[type="email"],
+        select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 1rem;
+            box-sizing: border-box; /* สำคัญเพื่อให้ padding ไม่ดัน width */
+            transition: border-color 0.2s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        /* Button Styling */
+        .btn {
+            background-color: #2563eb; /* สีน้ำเงินตามภาพ */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn:hover {
+            background-color: #1d4ed8;
+        }
+
+        .btn-block {
+            display: block;
+            width: 100%; /* ปุ่ม Submit เต็มความกว้าง */
+        }
+
+        /* Utility */
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mt-4 { margin-top: 1.5rem; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="form-group">
+        <label for="userSelect">เลือกชื่อผู้ใช้งาน:</label>
+        <select id="userSelect">
+            <option value="" disabled selected>กรุณาเลือกชื่อผู้ใช้</option>
+            </select>
+    </div>
+
+    <div class="form-group">
+        <button id="btnShowData" type="button" class="btn">แสดงข้อมูลผู้ใช้</button>
+    </div>
+
+    <hr style="border: 0; border-top: 1px solid #e5e7eb; margin: 1.5rem 0;">
+
+    <form id="mainForm">
+        <div class="form-group">
+            <label for="idCard">หมายเลขบัตรประชาชน:</label>
+            <input type="text" id="idCard" placeholder="กรุณากรอกหมายเลขบัตรประชาชน">
+        </div>
+
+        <div class="form-group">
+            <label for="titleName">คำนำหน้านาม:</label>
+            <select id="titleName">
+                <option value="" disabled selected>กรุณาเลือกคำนำหน้า</option>
+                <option value="นาย">นาย</option>
+                <option value="นาง">นาง</option>
+                <option value="นางสาว">นางสาว</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="firstName">ชื่อ:</label>
+            <input type="text" id="firstName" placeholder="กรุณากรอกชื่อของคุณ">
+        </div>
+
+        <div class="form-group">
+            <label for="lastName">นามสกุล:</label>
+            <input type="text" id="lastName" placeholder="กรุณากรอกนามสกุลของคุณ">
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" placeholder="กรุณากรอก email ของคุณ">
+        </div>
+
+        <div class="mt-4">
+            <button type="submit" class="btn btn-block">Submit</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    // 1. Mock Data (จำลอง JSON ที่ได้จาก API)
+    // ในการใช้งานจริง ให้ใช้ fetch('API_URL') แทนส่วนนี้
+    const mockUsersData = [
+        {
+            id: 101,
+            idCard: "1234567890123",
+            title: "นาย",
+            firstName: "สมชาย",
+            lastName: "ใจดี",
+            email: "somchai@example.com"
+        },
+        {
+            id: 102,
+            idCard: "9876543210987",
+            title: "นางสาว",
+            firstName: "สมหญิง",
+            lastName: "รักเรียน",
+            email: "somying@test.com"
+        },
+        {
+            id: 103, // User นี้ทำไว้ทดสอบ Error (ชื่อมีตัวเลข, email ผิด)
+            idCard: "1111111111111",
+            title: "นาย",
+            firstName: "Somchai99", 
+            lastName: "TestError",
+            email: "somchai_no_at_sign"
+        }
+    ];
+
+    // DOM Elements
+    const userSelect = document.getElementById('userSelect');
+    const btnShowData = document.getElementById('btnShowData');
+    const form = document.getElementById('mainForm');
+    
+    // Inputs
+    const inputIdCard = document.getElementById('idCard');
+    const inputTitle = document.getElementById('titleName');
+    const inputFirstName = document.getElementById('firstName');
+    const inputLastName = document.getElementById('lastName');
+    const inputEmail = document.getElementById('email');
+
+    // --- Life Cycle: เมื่อโหลดหน้าเว็บ ---
+    document.addEventListener('DOMContentLoaded', () => {
+        loadUserDropdown();
+    });
+
+    // Function 1: Fetch ข้อมูลมาใส่ Dropdown
+    function loadUserDropdown() {
+        // จำลองการ Fetch
+        const users = mockUsersData;
+
+        users.forEach(user => {
+            const option = document.createElement('option');
+            option.value = user.id;
+            // แสดง ID และ ชื่อ ใน Dropdown ตามโจทย์
+            option.textContent = `${user.id} - ${user.firstName} ${user.lastName}`;
+            userSelect.appendChild(option);
+        });
+    }
+
+    // Function 2: ปุ่ม Show (แสดงข้อมูลผู้ใช้)
+    btnShowData.addEventListener('click', () => {
+        const selectedId = parseInt(userSelect.value);
+        
+        if (!selectedId) {
+            alert("กรุณาเลือกผู้ใช้งานก่อน");
+            return;
+        }
+
+        // ค้นหา User จาก ID ที่เลือก
+        const user = mockUsersData.find(u => u.id === selectedId);
+
+        if (user) {
+            // Fill ข้อมูลลงใน Input แต่ละช่อง
+            inputIdCard.value = user.idCard;
+            inputTitle.value = user.title;
+            inputFirstName.value = user.firstName;
+            inputLastName.value = user.lastName;
+            inputEmail.value = user.email;
+        }
+    });
+
+    // Function 3: ปุ่ม Submit (ตรวจสอบเงื่อนไข Validation)
+    form.addEventListener('submit', (e) => {
+        e.preventDefault(); // ป้องกัน Form refresh หน้าเว็บ
+
+        const firstName = inputFirstName.value.trim();
+        const email = inputEmail.value.trim();
+
+        // เงื่อนไขที่ 1: ชื่อต้องไม่มีตัวเลขปน
+        // ใช้ Regex: \d หมายถึง digits (ตัวเลข 0-9)
+        if (/\d/.test(firstName)) {
+            alert("Error: ชื่อต้องไม่มีตัวเลขปนอยู่");
+            inputFirstName.focus();
+            return; // จบการทำงานทันที
+        }
+
+        // เงื่อนไขที่ 2: Email ต้องมีความยาว และมีตัว @
+        // กำหนดความยาวขั้นต่ำ เช่น 5 ตัวอักษร (a@b.c)
+        if (email.length < 5 || !email.includes('@')) {
+            alert("Error: Email ต้องมีเครื่องหมาย @ และมีความยาวที่ถูกต้อง");
+            inputEmail.focus();
+            return;
+        }
+
+        // ถ้าผ่านทุกเงื่อนไข
+        alert("Submit success");
+    });
+
+</script>
+
+</body>
+</html>

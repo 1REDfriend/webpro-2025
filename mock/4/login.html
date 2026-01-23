@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <style>
+        body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: #f4f4f4; margin: 0; }
+        .container { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); width: 300px; }
+        input { width: 100%; padding: 10px; margin: 10px 0; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+        button { width: 100%; padding: 10px; background: #4355dc; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #3241a8; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 style="text-align:center;">Login</h2>
+        <form id="loginForm">
+            <input type="text" id="username" placeholder="Username (admin)" required>
+            <input type="password" id="password" placeholder="Password (1234)" required>
+            <button type="submit">เข้าสู่ระบบ</button>
+        </form>
+    </div>
+
+    <script>
+        // ตรวจสอบ Login
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+
+            // จำลองการเช็ค Database
+            if(user === 'admin' && pass === '1234') {
+                // สร้าง Session ปลอม
+                sessionStorage.setItem('isLoggedIn', 'true');
+                // สร้าง Cookie ปลอม (ตามโจทย์)
+                document.cookie = "username=admin; path=/";
+                window.location.href = 'index.html';
+            } else {
+                alert('Username หรือ Password ผิด');
+            }
+        });
+    </script>
+</body>
+</html>

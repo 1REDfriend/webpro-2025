@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Form Management</title>
+    <style>
+        /* CSS ตกแต่งตามภาพ */
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h2 { color: #333; }
+        label { font-weight: bold; display: block; margin-top: 10px; }
+        input { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        
+        .btn-submit { width: 100%; background-color: #4355dc; color: white; padding: 12px; margin-top: 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        .btn-submit:hover { background-color: #3241a8; }
+        
+        .logout-btn { float: right; background: #ff4444; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 30px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #6a7df3; color: white; }
+        
+        .btn-edit { background-color: #4CAF50; color: white; border: none; padding: 6px 12px; cursor: pointer; border-radius: 4px; margin-right: 5px; }
+        .btn-delete { background-color: #f44336; color: white; border: none; padding: 6px 12px; cursor: pointer; border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <button onclick="logout()" class="logout-btn">Logout</button>
+    <h2>User Form</h2>
+    
+    <form id="userForm">
+        <label>ID:</label>
+        <input type="text" id="uid" placeholder="กรุณาใส่รหัสนักศึกษา" required>
+
+        <label>First Name:</label>
+        <input type="text" id="fname" placeholder="กรุณาใส่ชื่อของนักศึกษา" required>
+
+        <label>Last Name:</label>
+        <input type="text" id="lname" placeholder="กรุณาใส่นามสกุล" required>
+
+        <label>Username:</label>
+        <input type="text" id="uname" placeholder="กรุณาใส่ชื่อผู้ใช้" required>
+
+        <label>Email:</label>
+        <input type="email" id="email" placeholder="กรุณาใส่อีเมล" required>
+
+        <button type="submit" class="btn-submit">Submit</button>
+    </form>
+
+    <h2>User List</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Options</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            </tbody>
+    </table>
+</div>
+
+<script>
+    // 1. เช็ค Session ก่อน (ถ้าไม่ได้ Login ให้ดีดออก)
+    if (!sessionStorage.getItem('isLoggedIn')) {
+        window.location.href = 'login.html';
+    }
+
+    // โหลดข้อมูลเมื่อเข้าเว็บ
+    document.addEventListener('DOMContentLoaded', loadTable);
+
+    const form = document.getElementById('userForm');
+
+    // 2. ฟังก์ชัน Submit (Create & Update)
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        // รับค่าจาก Form
+        const newUser = {
+            id: document.getElementById('uid').value,
+            firstName: document.getElementById('fname').value,
+            lastName: document.getElementById('lname').value,
+            username: document.getElementById('uname').value,
+            email: document.getElementById('email').value
+        };
+
+        // ดึงข้อมูลเก่าจาก LocalStorage (จำลอง Database)
+        let users = JSON.parse(localStorage.getItem('usersDB')) || [];
+
+        // เช็คว่ามี ID นี้อยู่แล้วไหม?
+        const index = users.findIndex(user => user.id === newUser.id);
+
+        if (index !== -1) {
+            // --- UPDATE (ถ้ามี ID ซ้ำ ให้แก้ทับ) ---
+            users[index] = newUser;
+            alert('อัปเดตข้อมูลเรียบร้อย (Update)');
+        } else {
+            // --- CREATE (ถ้าไม่มี ID ให้เพิ่มใหม่) ---
+            users.push(newUser);
+            alert('เพิ่มข้อมูลใหม่เรียบร้อย (Create)');
+        }
+
+        // บันทึกลง LocalStorage
+        localStorage.setItem('usersDB', JSON.stringify(users));
+        
+        // เคลียร์ฟอร์มและรีเฟรชตาราง
+        form.reset();
+        loadTable();
+    });
+
+    // 3. ฟังก์ชัน Read (แสดงตาราง)
+    function loadTable() {
+        const tableBody = document.getElementById('tableBody');
+        const users = JSON.parse(localStorage.getItem('usersDB')) || [];
+        
+        tableBody.innerHTML = ''; // ล้างตารางเก่า
+
+        users.forEach(user => {
+            const row = `
+                <tr>
+                    <td>${user.id}</td>
+                    <td>${user.firstName}</td>
+                    <td>${user.lastName}</td>
+                    <td>${user.username}</td>
+                    <td>${user.email}</td>
+                    <td>
+                        <button class="btn-edit" onclick="editUser('${user.id}')">Edit</button>
+                        <button class="btn-delete" onclick="deleteUser('${user.id}')">Delete</button>
+                    </td>
+                </tr>
+            `;
+            tableBody.innerHTML += row;
+        });
+    }
+
+    // 4. ฟังก์ชัน Edit (ดึงข้อมูลมาโชว์ในฟอร์ม)
+    window.editUser = function(id) {
+        const users = JSON.parse(localStorage.getItem('usersDB')) || [];
+        const user = users.find(u => u.id === id);
+
+        if (user) {
+            document.getElementById('uid').value = user.id;
+            document.getElementById('fname').value = user.firstName;
+            document.getElementById('lname').value = user.lastName;
+            document.getElementById('uname').value = user.username;
+            document.getElementById('email').value = user.email;
+            
+            // เลื่อนหน้าจอขึ้นไปหาฟอร์ม
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }
+
+    // 5. ฟังก์ชัน Delete
+    window.deleteUser = function(id) {
+        if (confirm('ยืนยันที่จะลบข้อมูล ID: ' + id + ' ?')) {
+            let users = JSON.parse(localStorage.getItem('usersDB')) || [];
+            // กรองเอาตัวที่ไม่ใช่ออก (เท่ากับลบตัวนั้นทิ้ง)
+            users = users.filter(user => user.id !== id);
+            
+            // บันทึกกลับลง LocalStorage
+            localStorage.setItem('usersDB', JSON.stringify(users));
+            loadTable();
+        }
+    }
+
+    // ฟังก์ชัน Logout
+    window.logout = function() {
+        sessionStorage.removeItem('isLoggedIn');
+        window.location.href = 'login.html';
+    }
+</script>
+
+</body>
+</html>
