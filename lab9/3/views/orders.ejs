@@ -1,0 +1,110 @@
+<%- include('partials/header') %>
+
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+
+            <h2 class="mb-4 fw-bold"><i class="bi bi-box-seam"></i> ระบบติดตามคำสั่งซื้อ</h2>
+
+            <div class="card mb-5 shadow-sm">
+                <div class="card-body bg-light">
+                    <form action="/add" method="POST" class="row g-3">
+                        <div class="col-md-4">
+                            <input type="text" name="name" class="form-control" placeholder="ชื่อลูกค้า" required>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" name="product" class="form-control" placeholder="รายการสินค้า" required>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" name="address" class="form-control" placeholder="ที่อยู่" required>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" name="phone" class="form-control" placeholder="เบอร์โทร" required>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-success w-100">เพิ่มคำสั่งซื้อ</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <h3 class="mb-3 fw-bold">รายการคำสั่งซื้อ</h3>
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width: 5%">ID</th>
+                            <th style="width: 20%">ลูกค้า</th>
+                            <th style="width: 25%">สินค้า</th>
+                            <th style="width: 15%">สถานะ</th>
+                            <th style="width: 35%">เปลี่ยนสถานะ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (orders.length> 0) { %>
+                            <% orders.forEach(order=> { %>
+                                <tr>
+                                    <td>
+                                        <%= order.id %>
+                                    </td>
+                                    <td>
+                                        <strong>
+                                            <%= order.name %>
+                                        </strong><br>
+                                        <small class="text-muted">
+                                            <%= order.phone %>
+                                        </small>
+                                    </td>
+                                    <td>
+                                        <%= order.product %>
+                                    </td>
+                                    <td>
+                                        <% if(order.status=='รอดำเนินการ' ) { %>
+                                            <span class="badge bg-warning text-dark">
+                                                <%= order.status %>
+                                            </span>
+                                            <% } else if(order.status=='กำลังจัดส่ง' ) { %>
+                                                <span class="badge bg-info text-dark">
+                                                    <%= order.status %>
+                                                </span>
+                                                <% } else { %>
+                                                    <span class="badge bg-success">
+                                                        <%= order.status %>
+                                                    </span>
+                                                    <% } %>
+                                    </td>
+                                    <td>
+                                        <form action="/update" method="POST" class="d-flex gap-2">
+                                            <input type="hidden" name="id" value="<%= order.id %>">
+
+                                            <select name="status" class="form-select form-select-sm">
+                                                <option value="รอดำเนินการ" <%=order.status=='รอดำเนินการ' ? 'selected'
+                                                    : '' %>>รอดำเนินการ</option>
+                                                <option value="กำลังจัดส่ง" <%=order.status=='กำลังจัดส่ง' ? 'selected'
+                                                    : '' %>>กำลังจัดส่ง</option>
+                                                <option value="จัดส่งแล้ว" <%=order.status=='จัดส่งแล้ว' ? 'selected'
+                                                    : '' %>>จัดส่งแล้ว</option>
+                                                <option value="ยกเลิก" <%=order.status=='ยกเลิก' ? 'selected' : '' %>
+                                                    >ยกเลิก</option>
+                                            </select>
+
+                                            <button type="submit" class="btn btn-primary btn-sm"
+                                                style="min-width: 80px;">
+                                                อัปเดต
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                <% }) %>
+                                    <% } else { %>
+                                        <tr>
+                                            <td colspan="5" class="text-center text-muted">ยังไม่มีคำสั่งซื้อ</td>
+                                        </tr>
+                                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    <%- include('partials/footer') %>

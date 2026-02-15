@@ -1,0 +1,51 @@
+<%- include('partials/header') %>
+
+    <div class="row">
+        <div class="col-md-12">
+            <h2 class="mb-4 text-primary"><i class="bi bi-people-fill"></i> รายชื่อพนักงานทั้งหมด</h2>
+
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>ชื่อ-นามสกุล</th>
+                                <th>ตำแหน่ง</th>
+                                <th>จัดการ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (users.length> 0) { %>
+                                <% users.forEach(user=> { %>
+                                    <tr>
+                                        <td>
+                                            <%= user.id %>
+                                        </td>
+                                        <td>
+                                            <%= user.firstname %>
+                                                <%= user.lastname %>
+                                        </td>
+                                        <td><span class="badge bg-secondary">
+                                                <%= user.position %>
+                                            </span></td>
+                                        <td>
+                                            <a href="/user/<%= user.id %>" class="btn btn-info btn-sm text-white">
+                                                Details
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <% }) %>
+                                        <% } else { %>
+                                            <tr>
+                                                <td colspan="4" class="text-center">ไม่พบข้อมูลผู้ใช้งาน</td>
+                                            </tr>
+                                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- include('partials/footer') %>
