@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Information</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 40px;
+            color: #333;
+        }
+
+        h2 {
+            font-weight: normal;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        textarea {
+            width: 100%;
+            max-width: 500px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        .btn-group {
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 6px 12px;
+            margin-right: 5px;
+            border: 2px solid #000;
+            background-color: #fff;
+            color: #000;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>Employee Information</h2>
+
+    <form action="/save-cookie" method="POST">
+        <div class="form-group">
+            <label>Employee ID:</label>
+            <input type="text" name="CustomerId" value="<%= employee.CustomerId || '' %>">
+        </div>
+
+        <div class="form-group">
+            <label>Firstname:</label>
+            <input type="text" name="FirstName" value="<%= employee.FirstName || '' %>">
+        </div>
+
+        <div class="form-group">
+            <label>Lastname:</label>
+            <input type="text" name="LastName" value="<%= employee.LastName || '' %>">
+        </div>
+
+        <div class="form-group">
+            <label>Address:</label>
+            <textarea name="Address" rows="2"><%= employee.Address || '' %></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Email:</label>
+            <input type="email" name="Email" value="<%= employee.Email || '' %>">
+        </div>
+
+        <div class="form-group">
+            <label>Phone:</label>
+            <input type="text" name="Phone" value="<%= employee.Phone || '' %>">
+        </div>
+
+        <div class="btn-group">
+            <button type="submit">Save Data</button>
+            <button type="button" onclick="window.location.href='/show-data'">Show Data</button>
+            <button type="button" onclick="window.location.href='/clear-cookie'">Clear Data</button>
+        </div>
+    </form>
+
+</body>
+
+</html>
