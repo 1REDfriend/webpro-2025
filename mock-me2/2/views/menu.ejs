@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/bootstrap.min.css">
+    <script src="/bootstrap.min.js"></script>
+</head>
+<body style="display: flex; justify-content: center; ">
+    <div class="p-5 rounded" style="width: 90vh; background-color: rgb(185, 185, 185);">
+        <h1>รายละเอียดเมนู</h1>
+        <p>ชื่อ: <%= data.name %></p>
+        <p>ราคา: <%= data.price %> บาท</p>
+        <img src="<%= data.image %>" style="width: 300px;">
+        <br>
+        <a href="/">กลับหน้าแรก</a>
+    </div>
+</body>
+</html>
